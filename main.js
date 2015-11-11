@@ -29,37 +29,44 @@ function download(url, callback) {
     });
 }
 
-var url = "http://www.amazon.cn/s/ref=s9_dnav_bw_ir11_s?__mk_zh_CN=%E4%BA%9A%E9%A9%AC%E9%80%8A%E7%BD%91%E7%AB%99&node=658390051,!2146619051,!2146621051,1548960071,658414051&search-alias=stripbooks&field-enc-merchantbin=A1AJ19PSB66TGU&bbn=1548960071&pf_rd_m=A1AJ19PSB66TGU&pf_rd_s=merchandised-search-3&pf_rd_r=0NQ4A5HQJBC2AVHESW46&pf_rd_t=101&pf_rd_p=261616892&pf_rd_i=1548960071";
-download(url, function(data) {
-    if (data) {
-        var $ = cheerio.load(data);
-        $("a[class='a-link-normal s-access-detail-page  a-text-normal']").each(function(i, e) {
-            var bookName = $(e).attr("title");
-            console.log(bookName);
+var urlHead = "http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Cn%3A%212146619051%2Cn%3A%212146621051%2Cn%3A1548960071%2Cn%3A658414051%2Cp_6%3AA1AJ19PSB66TGU&page=";
+var urlTail = "&bbn=1548960071&ie=UTF8&qid=1447074469";
+for (var j=1; j<=75; j++) {
+    var oneSecond = 100 * j; // one second = 1000 x 1 ms
+    setTimeout(function() {
+        var url = urlHead + j.toString() + urlTail;
+        download(url, function(data) {
+            if (data) {
+                var $ = cheerio.load(data);
+                // console.log(x-1);
+                // console.log('=================================================================');
+                $("a[class='a-link-normal s-access-detail-page  a-text-normal']").each(function(i, e) {
+                    setTimeout(function() {
+                        var bookName = $(e).attr("title");
 
-            var url = "http://api.douban.com/v2/book/search?q="
-            + encodeURIComponent(bookName);
-
-            var oneSecond = 500 * (i + 1); // one second = 1000 x 1 ms
-            setTimeout(function() {
-                request({
-                    url: url,
-                    json: true
-                }, function (error, response, body) {
-                    if (!error && response.statusCode === 200) {
-                        if (body.books[0].rating === undefined) {
-                            console.log("Get douban rating error!");
-                            throw error;
-                        }
-                        else {
-                            console.log(bookName + " : " + body.books[0].rating.average); // Print the json response
-                        }
-                    }
+                        var url = "http://api.douban.com/v2/book/search?q="
+                        + encodeURIComponent(bookName);
+                        request({
+                            url: url,
+                            json: true
+                        }, function (error, response, body) {
+                            if (!error && response.statusCode === 200) {
+                                if (body !== undefined
+                                    && body.books !== undefined
+                                    && body.books[0] !== undefined) {
+                                    // console.log(bookName + " : " + "Get douban rating error!");
+                                // }
+                                // else {
+                                    var aver = parseInt(body.books[0].rating.average);
+                                    if (aver >= 7.5)
+                                        console.log(bookName + " : " + body.books[0].rating.average); // Print the json response
+                                }
+                            }
+                        });
+                    }, oneSecond);
                 });
-            }, oneSecond);
+            }
+            else console.log("error"); 
         });
-
-        console.log("done");
-    }
-    else console.log("error"); 
-});
+    }, oneSecond);
+}
