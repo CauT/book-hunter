@@ -32,9 +32,11 @@ function download(url, callback) {
 var urlHead = "http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Cn%3A%212146619051%2Cn%3A%212146621051%2Cn%3A1548960071%2Cn%3A658414051%2Cp_6%3AA1AJ19PSB66TGU&page=";
 var urlTail = "&bbn=1548960071&ie=UTF8&qid=1447074469";
 for (var j=1; j<=75; j++) {
+    var page = 0;
     var oneSecond = 100 * j; // one second = 1000 x 1 ms
     setTimeout(function() {
-        var url = urlHead + j.toString() + urlTail;
+        var url = urlHead + page + urlTail;
+        page = page + 1;
         download(url, function(data) {
             if (data) {
                 var $ = cheerio.load(data);
