@@ -1,0 +1,8 @@
+{
+    "DomBookNameSearchExpr": "a[class='a-link-normal s-access-detail-page  a-text-normal']",
+    "pageNum": 75,
+    "pageUrlHead": "http://www.amazon.cn/s/ref=sr_pg_2?rh=n%3A658390051%2Cn%3A%212146619051%2Cn%3A%212146621051%2Cn%3A1548960071%2Cn%3A658414051%2Cp_6%3AA1AJ19PSB66TGU&page=",
+    "pageUrlTail": "&bbn=1548960071&ie=UTF8&qid=1447074469",
+    "rankUrlHead": "http://api.douban.com/v2/book/search?q=",
+    "rankUrlTail": ""
+}
